@@ -1,4 +1,5 @@
 from fastapi import FastAPI, File, Form, UploadFile
+from fastapi.middleware.cors import CORSMiddleware
 
 import os
 import shutil
@@ -6,6 +7,18 @@ import uuid
 
 
 app = FastAPI()
+
+
+origins: list = [
+    "*"
+]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 CURRENT_DIRECTORY: str = os.path.dirname(__file__)
 BACKEND_DIRECTORY: str = os.path.dirname(CURRENT_DIRECTORY)
