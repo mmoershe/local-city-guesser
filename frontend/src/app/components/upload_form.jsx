@@ -67,6 +67,7 @@ export default function UploadForm() {
 
         try {
             const responseData = await submitPlace(formData)
+            console.log(`responseData = ${responseData}`)
             router.push("/upload/success");
         } catch (error) {
             alert("Irgendwas stimmt nicht, probiere es nochmal. Achte auf die richtigen Datentypen!")
