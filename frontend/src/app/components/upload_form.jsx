@@ -2,6 +2,7 @@
 
 import { submitPlace } from "./../lib/fetch";
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button"
 import {
@@ -19,29 +20,30 @@ import { Label } from "@/components/ui/label";
 const BACKEND_URL = process.env.BACKEND_URL;
 
 export default function UploadForm() {
+    const router = useRouter();
     console.log(BACKEND_URL)
     const [titel, setTitel] = useState("");
     const [latitude, setLatitude] = useState("");
     const [longitude, setLongitude] = useState("");
     const [autor, setAutor] = useState("");
-    const [file, setFile] = useState;
+    const [file, setFile] = useState(null);
 
-    const handleTitelChange= (e) => {
+    const handleTitelChange = (e) => {
         setTitel(e.target.value);
     };
-    const handleLatitudeChange= (e) => {
+    const handleLatitudeChange = (e) => {
         setLatitude(e.target.value);
     };
-    const handleLongitudeChange= () => {
+    const handleLongitudeChange = (e) => {
         setLongitude(e.target.value);
     };
-    const handleAutorChange= () => {
+    const handleAutorChange = (e) => {
         setAutor(e.target.value);
     };
-    const handleFileChange= () => {
+    const handleFileChange = (e) => {
         if (e.target.files && e.target.files.length > 0) {
             setFile(e.target.files[0]);
-    };
+        };
     };
 
     // Handle form submission
@@ -50,7 +52,7 @@ export default function UploadForm() {
 
         // Ensure an file is selected
         if (!file) {
-            alert("Please upload an image!");
+            alert("Bitte ein Bild hochladen!");
             return;
         }
 
@@ -63,8 +65,12 @@ export default function UploadForm() {
         formData.append("autor", autor);
         console.log(formData)
 
-        submitPlace(formData)
-
+        try {
+            const responseData = await submitPlace(formData)
+            router.push("/upload/success");
+        } catch (error) {
+            alert("Irgendwas stimmt nicht, probiere es nochmal. Achte auf die richtigen Datentypen!")
+        }
     };
 
 
@@ -91,14 +97,14 @@ export default function UploadForm() {
                         </div>
                         <Card className="w-full p-8 flex flex-col gap-6">
                             <CardTitle>Koordinaten</CardTitle>
-                        <div className="flex flex-col space-y-1.5 w-full">
-                            <Label htmlFor="latitude">Latitude</Label>
-                            <Input id="latitude" type="number" placeholder="Gib die Latitude des Ortes ein" onChange={handleLatitudeChange} />
-                        </div>
-                        <div className="flex flex-col space-y-1.5 w-full">
-                            <Label htmlFor="longitude">Longitude</Label>
-                            <Input id="longitude" type="number" placeholder="Gib die Longitude des Ortes ein" onChange={handleLongitudeChange} />
-                        </div>
+                            <div className="flex flex-col space-y-1.5 w-full">
+                                <Label htmlFor="latitude">Latitude</Label>
+                                <Input id="latitude" type="number" placeholder="Gib die Latitude des Ortes ein" onChange={handleLatitudeChange} />
+                            </div>
+                            <div className="flex flex-col space-y-1.5 w-full">
+                                <Label htmlFor="longitude">Longitude</Label>
+                                <Input id="longitude" type="number" placeholder="Gib die Longitude des Ortes ein" onChange={handleLongitudeChange} />
+                            </div>
                         </Card>
                     </div>
                 </form>
