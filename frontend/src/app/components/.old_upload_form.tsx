@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+//import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const BACKEND_URL: string | undefined = process.env.BACKEND_URL;
 
@@ -24,26 +24,28 @@ export default function UploadForm() {
     const [latitude, setLatitude] = useState("");
     const [longitude, setLongitude] = useState("");
     const [autor, setAutor] = useState("");
-    const [file, setFile] = useState(null);
+    const [file, setFile] = useState<File | null>(null);
 
-    const handleTitelChange= (e) => {
+    const handleTitelChange= (e: React.ChangeEvent<HTMLInputElement>) => {
         setTitel(e.target.value);
     };
-    const handleLatitudeChange= (e) => {
+    const handleLatitudeChange= (e: React.ChangeEvent<HTMLInputElement>) => {
         setLatitude(e.target.value);
     };
-    const handleLongitudeChange= (e) => {
+    const handleLongitudeChange= (e: React.ChangeEvent<HTMLInputElement>) => {
         setLongitude(e.target.value);
     };
-    const handleAutorChange= (e) => {
+    const handleAutorChange= (e: React.ChangeEvent<HTMLInputElement>) => {
         setAutor(e.target.value);
     };
-    const handleFileChange= (e) => {
-        setFile(e.target.files[0]);
+    const handleFileChange= (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files.length > 0) {
+            setFile(e.target.files[0]);
+    };
     };
 
     // Handle form submission
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: React.ChangeEvent<HTMLInputElement>) => {
         e.preventDefault(); // Prevent form from reloading the page
 
         // Ensure an file is selected
