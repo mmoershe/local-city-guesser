@@ -3,7 +3,7 @@ services:
     container_name: "guesser-backend"
     build: ./backend/.
     ports: 
-      - "8000:8000"
+      - "2777:2777"
 
   frontend: 
     container_name: "guesser-frontend"

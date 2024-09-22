@@ -8,6 +8,6 @@ RUN apt update && apt upgrade -y
 
 RUN pip install -r requirements.txt
 
-EXPOSE 8000
+EXPOSE 2777
 
 CMD ["python", "-u", "api/main.py"]
