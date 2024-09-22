@@ -1,5 +1,7 @@
 "use client";
 
+import { submitPlace } from "./../lib/fetch";
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button"
 import {
@@ -18,56 +20,49 @@ const BACKEND_URL: string | undefined = process.env.BACKEND_URL;
 
 export default function UploadForm() {
     console.log(BACKEND_URL)
-    const [title, setTitle] = useState("");
-    const [image, setImage] = useState(null);
+    const [titel, setTitel] = useState("");
+    const [latitude, setLatitude] = useState("");
+    const [longitude, setLongitude] = useState("");
+    const [autor, setAutor] = useState("");
+    const [file, setFile] = useState(null);
 
-    // Handle input changes
-    const handleTitleChange = (e) => {
-        setTitle(e.target.value);
-        console.log("Title wurde geändert")
-        console.log(title)
+    const handleTitelChange= (e) => {
+        setTitel(e.target.value);
     };
-
-    const handleImageChange = (e) => {
-        setImage(e.target.files[0]); // Get the first file (if multiple files allowed, handle accordingly)
-        console.log("Bild wurde hochgeladen")
-        console.log(image)
+    const handleLatitudeChange= (e) => {
+        setLatitude(e.target.value);
+    };
+    const handleLongitudeChange= (e) => {
+        setLongitude(e.target.value);
+    };
+    const handleAutorChange= (e) => {
+        setAutor(e.target.value);
+    };
+    const handleFileChange= (e) => {
+        setFile(e.target.files[0]);
     };
 
     // Handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault(); // Prevent form from reloading the page
 
-        // Ensure an image is selected
-        if (!image) {
+        // Ensure an file is selected
+        if (!file) {
             alert("Please upload an image!");
             return;
         }
 
         // Create form data object to send the file and title
         const formData = new FormData();
-        formData.append("image", image);
-        formData.append("title", title);
+        formData.append("file", file);
+        formData.append("titel", titel);
+        formData.append("latitude", latitude);
+        formData.append("longitude", longitude);
+        formData.append("autor", autor);
         console.log(formData)
 
-        try {
-            // Submit the form data (change URL to your API route or server endpoint)
-            console.log(`${BACKEND_URL}/images/upload`)
-            const response = await fetch(`${BACKEND_URL}/images/upload`, {
-                method: "POST",
-                body: formData,
-            });
+        submitPlace(formData)
 
-            if (response.ok) {
-                alert("Form submitted successfully!");
-                // Optionally reset form here
-            } else {
-                alert("Failed to submit form.");
-            }
-        } catch (error) {
-            console.error("Error uploading the form:", error);
-            alert("An error occurred while submitting the form.");
-        }
     };
 
 
@@ -81,18 +76,33 @@ export default function UploadForm() {
                 <form onSubmit={handleSubmit}>
                     <div className="flex flex-col w-full items-center gap-8">
                         <div className="flex flex-col space-y-1.5 w-full">
-                            <Label htmlFor="image">Bild hochladen</Label>
-                            <Input type="file" id="image" placeholder="Lade das Bild hoch" onChange={handleImageChange} />
+                            <Label htmlFor="file">Bild hochladen</Label>
+                            <Input type="file" id="file" placeholder="Lade das Bild hoch" onChange={handleFileChange} />
                         </div>
                         <div className="flex flex-col space-y-1.5 w-full">
                             <Label htmlFor="titel">Titel</Label>
-                            <Input id="titel" placeholder="Gib deinem Ort einen Titel" onChange={handleTitleChange} />
+                            <Input id="titel" placeholder="Gib deinem Ort einen Titel" onChange={handleTitelChange} required />
                         </div>
+                        <div className="flex flex-col space-y-1.5 w-full">
+                            <Label htmlFor="autor">Autor</Label>
+                            <Input id="autor" placeholder="Gib deinen Namen ein" onChange={handleAutorChange} />
+                        </div>
+                        <Card className="w-full p-8 flex flex-col gap-6">
+                            <CardTitle>Koordinaten</CardTitle>
+                        <div className="flex flex-col space-y-1.5 w-full">
+                            <Label htmlFor="latitude">Latitude</Label>
+                            <Input id="latitude" type="number" placeholder="Gib die Latitude des Ortes ein" onChange={handleLatitudeChange} />
+                        </div>
+                        <div className="flex flex-col space-y-1.5 w-full">
+                            <Label htmlFor="longitude">Longitude</Label>
+                            <Input id="longitude" type="number" placeholder="Gib die Longitude des Ortes ein" onChange={handleLongitudeChange} />
+                        </div>
+                        </Card>
                     </div>
                 </form>
             </CardContent>
             <CardFooter className="flex justify-end">
-                <Button type="submit" onClick={handleSubmit}>Deploy</Button>
+                <Button type="submit" onClick={handleSubmit}>Ort hinzufügen</Button>
             </CardFooter>
         </Card>
     )

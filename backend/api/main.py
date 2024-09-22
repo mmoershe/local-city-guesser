@@ -1,4 +1,4 @@
-from fastapi import FastAPI, File, UploadFile
+from fastapi import FastAPI, File, Form, UploadFile
 
 import os
 import shutil
@@ -10,6 +10,8 @@ app = FastAPI()
 CURRENT_DIRECTORY: str = os.path.dirname(__file__)
 BACKEND_DIRECTORY: str = os.path.dirname(CURRENT_DIRECTORY)
 IMAGES_DIRECTORY: str = os.path.join(BACKEND_DIRECTORY, "images")
+if not os.path.exists(IMAGES_DIRECTORY): 
+    os.makedirs(IMAGES_DIRECTORY)
 
 
 @app.get("/")
@@ -17,13 +19,22 @@ def root():
     return {"status": "ok"}
 
 @app.post("/images/upload")
-def images_upload(file: UploadFile): 
+def images_upload(file: UploadFile, 
+                  titel: str = Form(...), 
+                  latitude: float = Form(...), 
+                  longitude: float = Form(...), 
+                  autor: str = Form(...)):
+    print(f"{titel = }")
+    print(f"{latitude= }")
+    print(f"{longitude = }")
+    print(f"{autor = }")
     filename: str = f"{uuid.uuid4()}.jpg"
     filepath: str = os.path.join(IMAGES_DIRECTORY, filename)
     try: 
         with open(filepath, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
-        return {"message": f"Successfully saved image to '{filepath}'."}
+        print("Bild wurde hochgeladen")
+        return {"message": f"Successfully saved image to '{filepath}'.", "success": True}
     except Exception as e: 
         return {"message": e.args}
 
